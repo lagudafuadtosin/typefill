@@ -1,0 +1,52 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Typefill editor test</title>
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/prosemirror-view@1.38.1/style/prosemirror.css" rel="stylesheet">
+<style>
+  body { font: 14px system-ui; padding: 16px; }
+  section { margin-bottom: 18px; } h3 { margin: 4px 0; }
+  .box { border: 1px solid #999; min-height: 60px; width: 600px; padding: 4px; }
+</style>
+</head>
+<body>
+  <section><h3>Quill</h3><div id="quill" style="height:90px;width:600px"></div></section>
+  <section><h3>TinyMCE</h3><textarea id="tiny"></textarea></section>
+  <section><h3>CKEditor 5</h3><div id="ck"></div></section>
+  <section><h3>ProseMirror</h3><div id="pm" class="box"></div></section>
+  <section><h3>Lexical</h3><div id="lex" class="box" contenteditable="true"></div></section>
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tinymce@7.6.1/tinymce.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ckeditor5@43.3.1/dist/browser/ckeditor5.umd.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/ckeditor5@43.3.1/dist/browser/ckeditor5.css" rel="stylesheet">
+  <script>
+    // Each editor's own idea of its text, read through its own API
+    window.editors = {};
+    window.quill = new Quill("#quill", { theme: "snow" });
+    window.editors.quill = () => quill.getText().replace(/\n$/, "");
+    tinymce.init({ selector: "#tiny", license_key: "gpl", height: 160, menubar: false, plugins: "", setup: (ed) => { window.tiny = ed; } });
+    window.editors.tiny = () => window.tiny.getContent({ format: "text" });
+    const { ClassicEditor, Essentials, Paragraph, Bold, Link, Clipboard } = CKEDITOR;
+    ClassicEditor.create(document.querySelector("#ck"), { licenseKey: "GPL", plugins: [Essentials, Paragraph, Bold, Link, Clipboard] }).then((ed) => { window.ck = ed; });
+    window.editors.ck = () => { const root = window.ck.model.document.getRoot(); return [...root.getChildren()].map((p) => [...p.getChildren()].map((n) => n.data ?? (n.name === "softBreak" ? "\n" : "")).join("")).join("\n"); };
+  </script>
+  <script type="module">
+    // Every ProseMirror part pinned to the same versions of the others, or the page loads two copies of one and the
+    // key bindings never connect (Enter then falls back to the browser and behaves unlike any real ProseMirror site)
+    import { EditorState } from "https://esm.sh/prosemirror-state@1.4.3?deps=prosemirror-model@1.24.1,prosemirror-transform@1.10.2,prosemirror-view@1.38.1";
+    import { EditorView } from "https://esm.sh/prosemirror-view@1.38.1?deps=prosemirror-state@1.4.3,prosemirror-model@1.24.1,prosemirror-transform@1.10.2";
+    import { schema } from "https://esm.sh/prosemirror-schema-basic@1.2.3?deps=prosemirror-model@1.24.1";
+    import { keymap } from "https://esm.sh/prosemirror-keymap@1.2.2?deps=prosemirror-state@1.4.3,prosemirror-model@1.24.1,prosemirror-transform@1.10.2,prosemirror-view@1.38.1";
+    import { baseKeymap } from "https://esm.sh/prosemirror-commands@1.6.2?deps=prosemirror-state@1.4.3,prosemirror-model@1.24.1,prosemirror-transform@1.10.2,prosemirror-view@1.38.1";
+    const view = new EditorView(document.querySelector("#pm"), { state: EditorState.create({ schema, plugins: [keymap(baseKeymap)] }) });
+    window.pm = view;
+    window.editors.pm = () => { const out = []; view.state.doc.forEach((n) => out.push(n.textContent)); return out.join("\n"); };
+
+    import { createEditor, $getRoot } from "https://esm.sh/lexical@0.23.1";
+    import { registerRichText } from "https://esm.sh/@lexical/rich-text@0.23.1?deps=lexical@0.23.1";
+    const lex = createEditor({ namespace: "t", onError: (e) => console.error(e) });
+    lex.setRootElement(document.getElementById("lex"));
+    registerRichText(lex);
+    window.editors.lex = () => lex.getEditorState().read(() => $getRoot().getChildren().map((c) => c.getTextContent()).join("\n"));
+    window.editorsReady = true;
+  </script>
+</body></html>

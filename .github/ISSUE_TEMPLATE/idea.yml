@@ -1,0 +1,11 @@
+name: An idea
+description: Something you'd like Typefill to do
+labels: [idea]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What you'd like
+      description: What you want to do, and how you do it now.
+    validations:
+      required: true

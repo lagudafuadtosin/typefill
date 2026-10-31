@@ -1,0 +1,46 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Typefill test</title></head>
+<body>
+  <input id="input" type="text" style="width:500px">
+  <textarea id="area" rows="6" cols="60"></textarea>
+  <div id="ce" contenteditable="true" style="border:1px solid #999;min-height:60px;width:500px"></div>
+  <!-- A rich editor that takes pastes itself, like Gmail or Notion -->
+  <div id="rich" contenteditable="true" style="border:1px solid #999;min-height:60px;width:500px"></div>
+  <input id="react" type="text" style="width:500px">
+  <!-- For Pro: text to read off the page, and a two-field form to fill with key steps -->
+  <p>Customer: <span id="cust">Ada Lovelace</span></p>
+  <form id="form2" onsubmit="event.preventDefault(); window.submitted = (window.submitted || 0) + 1;">
+    <input id="f1" type="text"> <input id="f2" type="text">
+  </form>
+  <!-- A post box inside the page's own modal dialog, like LinkedIn -->
+  <dialog id="modal"><div id="inmodal" contenteditable="true" style="border:1px solid #999;min-height:60px;width:400px"></div></dialog>
+  <!-- An editor that takes a paste and puts it in a moment later, like Outlook -->
+  <div id="late" contenteditable="true" style="border:1px solid #999;min-height:60px;width:500px"></div>
+  <script>
+    document.getElementById("late").addEventListener("paste", (e) => {
+      e.preventDefault();
+      const text = e.clipboardData.getData("text/plain");
+      const r = getSelection().getRangeAt(0).cloneRange();
+      setTimeout(() => {
+        r.deleteContents();
+        const frag = document.createDocumentFragment();
+        // Like real editors, a space at the end of a line is kept as a no-break space so it shows
+        text.split("\n").forEach((line, i) => { if (i) frag.append(document.createElement("br")); frag.append(line.replace(/ $/, " ")); });
+        const last = frag.lastChild; r.insertNode(frag); r.setStartAfter(last); r.collapse(true);
+        const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      }, 120);
+    });
+    document.getElementById("rich").addEventListener("paste", (e) => {
+      e.preventDefault();
+      const text = e.clipboardData.getData("text/plain"); window.lastPaste = [text, e.clipboardData.types.join(","), String(e.isTrusted)];
+      const sel = getSelection(); const r = sel.getRangeAt(0); r.deleteContents();
+      const frag = document.createDocumentFragment();
+      text.split("\n").forEach((line, i) => { if (i) frag.append(document.createElement("br")); frag.append(line); });
+      const last = frag.lastChild; r.insertNode(frag); r.setStartAfter(last); r.collapse(true); sel.removeAllRanges(); sel.addRange(r);
+      window.richPastes = (window.richPastes || 0) + 1;
+    });
+    // Like a framework's controlled input: it keeps its own copy of the value from input events
+    window.reactValue = "";
+    document.getElementById("react").addEventListener("input", (e) => { window.reactValue = e.target.value; });
+  </script>
+</body></html>

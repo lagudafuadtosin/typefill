@@ -1,0 +1,26 @@
+name: Something isn't working
+description: A shortcut doesn't expand, text goes in wrong, or something else goes wrong
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you typed, what you expected, and what you got instead.
+    validations:
+      required: true
+  - type: input
+    id: site
+    attributes:
+      label: Website
+      description: The site you were on, like Gmail or LinkedIn. Please leave out anything private.
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      description: For example Chrome 156 on Windows, or Firefox on Mac.
+  - type: textarea
+    id: snippet
+    attributes:
+      label: The snippet
+      description: The snippet's text, if it helps. Please take out anything private first.

@@ -1,0 +1,16 @@
+{
+  "name": "typefill",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node build.mjs && node test/run.mjs",
+    "test:firefox": "node build.mjs && node test/run.mjs",
+    "test:editors": "node build.mjs && node test/editors.mjs",
+    "test:docs": "node build.mjs && node test/docs.mjs"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.16.0"
+  }
+}

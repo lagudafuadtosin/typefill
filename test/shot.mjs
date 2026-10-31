@@ -1,0 +1,20 @@
+// Screenshots of the snippet page and the form box, light and dark
+import puppeteer from "puppeteer-core";
+import { resolve } from "node:path";
+const ext = resolve("dist/chrome");
+const out = process.env.OUT;
+const browser = await puppeteer.launch({ executablePath: process.env.CFT, headless: true, args: [`--disable-extensions-except=${ext}`, `--load-extension=${ext}`] });
+const worker = await browser.waitForTarget((t) => t.type() === "service_worker");
+const id = new URL(worker.url()).host;
+await new Promise((r) => setTimeout(r, 1500));
+const p = await browser.newPage();
+await p.setViewport({ width: 1280, height: 1000 });
+await p.goto(`chrome-extension://${id}/options.html`);
+await new Promise((r) => setTimeout(r, 600));
+await p.screenshot({ path: `${out}/options-light.png` });
+await p.emulateMediaFeatures([{ name: "prefers-color-scheme", value: "dark" }]);
+await p.screenshot({ path: `${out}/options-dark.png` });
+await p.emulateMediaFeatures([{ name: "prefers-color-scheme", value: "light" }]);
+await p.setViewport({ width: 390, height: 844 });
+await p.screenshot({ path: `${out}/options-phone.png`, fullPage: true });
+await browser.close();

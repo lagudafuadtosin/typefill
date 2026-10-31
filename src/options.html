@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Typefill snippets</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Typefill</h1>
+      <p class="sub">Type a shortcut anywhere and it turns into the full text. Press <kbd id="searchKey">Ctrl+Shift+Space</kbd> to find a snippet by name.</p>
+    </div>
+    <p id="syncState" class="sync" aria-live="polite"></p>
+  </header>
+  <main>
+    <aside>
+      <div class="side-top">
+        <input id="search" type="search" placeholder="Search snippets" aria-label="Search snippets">
+        <button id="add" class="primary">New snippet</button>
+      </div>
+      <div id="list" role="listbox" aria-label="Snippets"></div>
+      <div class="side-foot">
+        <button id="export">Export</button>
+        <button id="import">Import</button>
+        <input id="file" type="file" accept=".json,.csv,application/json,text/csv" hidden>
+      </div>
+    </aside>
+    <section id="editor" hidden>
+      <div class="grid">
+        <label>Shortcut <input id="shortcut" placeholder="/hello" spellcheck="false" autocomplete="off"></label>
+        <label>Name <input id="label" placeholder="What it's for" autocomplete="off"></label>
+        <label>Folder <input id="folder" list="folders" placeholder="No folder" autocomplete="off"></label>
+      </div>
+      <datalist id="folders"></datalist>
+      <p id="clash" class="warn" hidden></p>
+      <div class="tools" role="toolbar" aria-label="Insert">
+        <span>Insert:</span>
+        <button data-insert="{formtext: name=Name}">Text box</button>
+        <button data-insert="{formparagraph: name=Details}">Paragraph box</button>
+        <button data-insert="{formmenu: name=Choice; default=First; Second; Third}">Dropdown</button>
+        <button data-insert="{formdate: name=Date; format=D MMMM YYYY}">Date picker</button>
+        <button data-insert="{formtoggle: name=Include this}Optional text{endformtoggle}">Optional part</button>
+        <button data-insert="{time: D MMMM YYYY}">Today</button>
+        <button data-insert="{clipboard}">Clipboard</button>
+        <button data-insert="{cursor}">Caret here</button>
+        <button id="importBtn" title="Put another snippet inside this one">Another snippet</button>
+      </div>
+      <div id="proTools"></div>
+      <p id="proNote" class="pro-note" hidden></p>
+      <div class="format-row">
+        <label class="toggle"><input id="rich" type="checkbox"> Formatting</label>
+        <div id="formatBar" class="format-bar" role="toolbar" aria-label="Formatting" hidden>
+          <button data-cmd="bold" title="Bold"><b>B</b></button>
+          <button data-cmd="italic" title="Italic"><i>I</i></button>
+          <button data-cmd="underline" title="Underline"><u>U</u></button>
+          <button data-cmd="link" title="Link">Link</button>
+          <button data-cmd="insertUnorderedList" title="Bulleted list">• List</button>
+          <button data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+          <button data-cmd="image" title="Picture from a web address">Picture</button>
+          <button data-cmd="removeFormat" title="Clear formatting">Clear</button>
+        </div>
+      </div>
+      <textarea id="text" rows="12" spellcheck="true" aria-label="Snippet text"></textarea>
+      <div id="richText" class="rich" contenteditable="true" spellcheck="true" aria-label="Snippet text" hidden></div>
+      <div class="ask" id="ask" hidden>
+        <input id="askInput" autocomplete="off">
+        <button id="askOk" class="primary">Add</button>
+        <button id="askCancel">Cancel</button>
+      </div>
+      <div class="preview-head">Preview</div>
+      <div id="preview" class="preview"></div>
+      <div class="actions">
+        <label class="toggle"><input id="off" type="checkbox"> Turned off</label>
+        <span class="grow"></span>
+        <span id="saved" class="saved" aria-live="polite"></span>
+        <button id="delete" class="danger">Delete</button>
+      </div>
+    </section>
+    <section id="empty" class="empty">
+      <h2>No snippet picked</h2>
+      <p id="emptyNote">Pick one on the left, or make a new one.</p>
+      <details>
+        <summary>How fields work</summary>
+        <ul class="help">
+          <li><code>{formtext: name=First name; default=Sam}</code> a box to type in</li>
+          <li><code>{formmenu: name=Size; default=M; S; L}</code> a dropdown, the default comes first</li>
+          <li><code>{formdate: name=Due; format=D MMMM; default=+7D}</code> a date picker, a week from today here</li>
+          <li><code>{formtoggle: name=PS}...{endformtoggle}</code> text you can tick on or off</li>
+          <li><code>{=First name}</code> repeats a field's answer</li>
+          <li><code>{import: /sig}</code> puts another snippet in</li>
+          <li><code>{time: dddd D MMMM; shift=+1D}</code> the date, tomorrow here</li>
+          <li><code>{clipboard}</code> what you last copied, <code>{cursor}</code> where the caret ends up</li>
+        </ul>
+      </details>
+      <div id="proHelp"></div>
+    </section>
+  </main>
+  <div id="proSection"></div>
+  <footer>
+    <label class="toggle"><input id="enabled" type="checkbox" checked> Expand shortcuts</label>
+    <label class="toggle"><input id="syncOn" type="checkbox" checked> Sync through my browser account</label>
+    <label class="sites">Not on these sites <input id="blocked" placeholder="bank.com, mail.example.org" spellcheck="false"></label>
+  </footer>
+  <script src="template.js"></script>
+  <script src="html.js"></script>
+  <!-- Typefill Pro's scripts go here in the Pro build -->
+  <script src="options.js"></script>
+</body>
+</html>
