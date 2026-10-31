@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Typefill",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Type a short code and get your full text, with fill-in boxes and dropdowns. Free, unlimited, and what you type never leaves your browser.",
   "permissions": [
     "storage",
