@@ -4,6 +4,9 @@ Type a short code and get your full text, anywhere in your browser. Free, with n
 
 Typefill works in Chrome, Edge, Brave and Firefox.
 
+- [Add to Chrome](https://chromewebstore.google.com/detail/typefill/ljiilefogipbjnkofncdmgfbfmjfppon) (Edge and Brave install it from the Chrome Web Store too)
+- [Add to Firefox](https://addons.mozilla.org/en-US/firefox/addon/typefill-free-text-expander/)
+
 ## What it does
 
 - **Shortcuts.** Type `/thanks` and it turns into your whole reply.
