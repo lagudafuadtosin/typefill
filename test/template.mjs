@@ -22,6 +22,8 @@ check("repeat a field", run("{formtext: name=First name}, yes {=First name}", { 
 check("dropdown fields", T.fields(T.parse("{formmenu: name=Size; default=M; S; L}"))[0].options, ["M", "S", "L"]);
 check("toggle off", run("A{formtoggle: name=PS; default=no} B{endformtoggle}.", { PS: false }), "A.");
 check("toggle on", run("A{formtoggle: name=PS} B{endformtoggle}.", { PS: true }), "A B.");
+check("note not typed", run("A{note}{formmenu: name=Choice; default=First; Second} hidden{endnote}B", { Choice: "First" }), "AB");
+check("note fields still asked", T.fields(T.parse("{note}{formmenu: name=Choice; default=First; Second}{endnote}")).map((f) => f.name), ["Choice"]);
 check("date", run("{time: YYYY-MM-DD; shift=+1D}", {}, { now: new Date(2026, 9, 31, 12) }), "2026-11-01");
 check("date picker", run("{formdate: name=Due; format=Do MMMM}", { Due: "2026-12-25" }), "25th December");
 check("import", run("A {import: /sig} B", {}, {}, (s) => (s === "/sig" ? "Sig" : null)), "A Sig B");

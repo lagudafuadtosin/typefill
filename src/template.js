@@ -4,6 +4,7 @@
 //   {formmenu: name=Size; default=M; S; L}   {formtoggle: name=PS}...{endformtoggle}
 //   {formdate: name=Due; format=D MMMM YYYY; default=+7D}
 //   {=First name} repeats what was typed in that field.   {import: /sig} puts another snippet in.
+//   {note}...{endnote} is shown in the form but not typed out, so a field inside it can steer an {if} without its answer appearing.
 // A backslash before { or } or ; keeps it as a plain character.
 // A formatted snippet is HTML with the same commands in its text. Anything typed into a field is escaped there.
 //
@@ -84,6 +85,8 @@
         into().push({ type: "expr", src: m[2].trim() });
       } else if (cmd === "endformtoggle") {
         if (owner?.type === "formtoggle") frames.pop();
+      } else if (cmd === "endnote") {
+        if (owner?.type === "note") frames.pop();
       } else if (cmd === "if") {
         const node = { type: "if", branches: [{ cond: m[2].trim(), children: [] }], otherwise: null };
         into().push(node);
@@ -105,7 +108,7 @@
       } else {
         const node = { type: cmd, ...parseArgs(m[2]) };
         into().push(node);
-        if (cmd === "formtoggle") { node.children = []; stack.push(node.children, node); }
+        if (cmd === "formtoggle" || cmd === "note") { node.children = []; stack.push(node.children, node); }
       }
     }
     flush();
@@ -214,6 +217,7 @@
             break;
           }
           case "formtoggle": if (values[node.named.name]) walk(node.children); break;
+          case "note": break;
           default:
             // Unknown commands are typed as they were written
             put(`{${node.type}${node.plain.length || Object.keys(node.named).length ? ": " + [...Object.entries(node.named).map(([k, v]) => `${k}=${v}`), ...node.plain].join("; ") : ""}}`);
