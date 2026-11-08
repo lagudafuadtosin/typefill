@@ -12,6 +12,7 @@ const STARTERS = [
 
 api.runtime.onInstalled.addListener(async ({ reason }) => {
   if (reason !== "install") return;
+  void addToOpenTabs();
   const { snippets } = await api.storage.local.get("snippets");
   if (!snippets) {
     const now = Date.now();
@@ -21,6 +22,22 @@ api.runtime.onInstalled.addListener(async ({ reason }) => {
 });
 
 api.action.onClicked.addListener(() => api.runtime.openOptionsPage());
+
+// Chrome doesn't put an extension's page scripts into tabs that were already open when it's installed, so a shortcut
+// typed in an open Gmail would do nothing until that tab is reloaded. Typefill adds its scripts to those tabs itself,
+// in the order the manifest lists them. Firefox does this on its own, and its build has no scripting permission.
+async function addToOpenTabs() {
+  if (!api.scripting) return;
+  const scripts = api.runtime.getManifest().content_scripts ?? [];
+  const tabs = await api.tabs.query({ url: ["http://*/*", "https://*/*"] });
+  await Promise.all(tabs.map(async (tab) => {
+    for (const c of scripts) {
+      try {
+        await api.scripting.executeScript({ target: { tabId: tab.id, allFrames: !!c.all_frames }, files: c.js, world: c.world ?? "ISOLATED", injectImmediately: true });
+      } catch { break; /* a page that can't take scripts, like the Web Store or a closed tab */ }
+    }
+  }));
+}
 
 // The search box opens in whichever frame of the tab has the caret
 api.commands.onCommand.addListener(async (command, tab) => {

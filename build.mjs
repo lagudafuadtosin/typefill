@@ -8,6 +8,8 @@ const targets = {
   chrome: {
     ...base,
     background: { service_worker: "background.js" },
+    // Chrome leaves tabs open before the install without Typefill until they reload: this lets it add itself to them
+    permissions: [...base.permissions, "scripting"],
     // Docs takes key presses through an about:blank frame; this lets the script run there
     content_scripts: base.content_scripts.map((c) => ({ ...c, match_origin_as_fallback: true })),
   },

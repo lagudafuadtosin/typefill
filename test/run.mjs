@@ -312,6 +312,39 @@ if (!FIREFOX) {
   await page.keyboard.press("Enter");
   await sleep(300);
   check("snippet page: new snippet works", await val("#input"), "Pick Second");
+
+  // The setup guide: shows on the snippet page, "Don't show this again" starts ticked, a Try it here box expands
+  // shortcuts, the page's own boxes never do, and closing it keeps it closed until the link brings it back
+  await opts.bringToFront();
+  await opts.evaluate(async () => { await chrome.storage.local.remove("guideHidden"); });
+  await opts.reload();
+  await sleep(600);
+  check("guide: shows on the snippet page", await opts.$eval("#guide", (g) => !g.hidden), true);
+  check("guide: Don't show this again starts ticked", await opts.$eval("#guideHide", (c) => c.checked), true);
+  await opts.click("#tryBox");
+  await opts.keyboard.type("/date");
+  await sleep(400);
+  check("guide: Try it here expands a shortcut", await opts.$eval("#tryBox", (b) => b.value), (v) => /^\d{4}-\d{2}-\d{2}$/.test(v));
+  await opts.click("#add");
+  await opts.keyboard.type("/date");
+  await sleep(400);
+  check("guide: the Shortcut box doesn't expand", await opts.$eval("#shortcut", (b) => b.value), "/date");
+  await opts.click("#guideClose");
+  await sleep(300);
+  check("guide: Close hides it", await opts.$eval("#guide", (g) => g.hidden), true);
+  await opts.reload();
+  await sleep(600);
+  check("guide: stays hidden after closing with the box ticked", await opts.$eval("#guide", (g) => g.hidden), true);
+  await opts.click("#guideOpen");
+  await sleep(200);
+  check("guide: How to set up a snippet brings it back, ticked", await opts.$eval("#guide", (g) => !g.hidden && document.getElementById("guideHide").checked), true);
+  await opts.click("#guideHide");
+  await opts.click("#guideClose");
+  await opts.reload();
+  await sleep(600);
+  check("guide: unticked before closing, it shows again next time", await opts.$eval("#guide", (g) => !g.hidden), true);
+  // leave it hidden for anything after
+  await opts.evaluate(async () => { await chrome.storage.local.set({ guideHidden: true }); });
 }
 
 if (process.env.SHOW) await sleep(1500);

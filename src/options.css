@@ -108,3 +108,12 @@ kbd { font: 12px ui-monospace, Consolas, monospace; border: 1px solid var(--line
 .pro-devices li .seen { color: var(--soft); font-size: 12.5px; }
 .pro-devices li .grow { flex: 1; }
 .pro-devices .me { font-size: 12px; background: var(--pick); border-radius: 5px; padding: 1px 6px; }
+.guide { max-width: 1152px; margin: 8px 24px 0; padding: 16px 20px; background: var(--panel); border: 1px solid var(--accent); border-radius: 12px; }
+.guide h2 { margin: 0 0 6px; font-size: 16px; }
+.guide ol { margin: 0 0 12px; padding-left: 20px; }
+.guide li { margin: 5px 0; }
+.guide .try textarea { font-family: inherit; }
+.guide-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+button.link { padding: 0; border: 0; background: none; color: var(--accent); text-decoration: underline; cursor: pointer; margin-top: 4px; }
+@media (max-width: 760px) { .guide { margin: 8px 16px 0; } }
+

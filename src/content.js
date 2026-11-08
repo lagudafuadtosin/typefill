@@ -17,6 +17,9 @@
   let enabled = true;
   // Typefill Pro, when it's part of this build (pro-content.js), plugs in here. The free build has none.
   const pro = () => globalThis.TypefillPro;
+  // On Typefill's own snippet page only the "Try it here" box expands shortcuts, never the boxes snippets are written in
+  const ownPage = location.href.startsWith(api.runtime.getURL(""));
+  const allowed = (el) => !ownPage || !!el?.closest?.("[data-typefill-try]");
 
   async function load() {
     const { snippets: list = [], settings = {} } = await api.storage.local.get(["snippets", "settings"]);
@@ -87,7 +90,7 @@
     if (!enabled || busy || !snippets.length) return;
     if (e.inputType && e.inputType !== "insertText" && e.inputType !== "insertCompositionText") return;
     const el = deepActive();
-    if (!el) return;
+    if (!el || !allowed(el)) return;
     if (isTextField(el)) {
       if (el.selectionStart !== el.selectionEnd || el.selectionStart == null) return;
       const before = el.value.slice(Math.max(0, el.selectionStart - longest), el.selectionStart);
@@ -107,6 +110,7 @@
   function currentTarget() {
     if (inDocsFrame) return docsTarget();
     const el = deepActive();
+    if (el && !allowed(el)) return null;
     if (el && isTextField(el)) return { kind: "field", el, start: el.selectionStart, end: el.selectionEnd };
     const host = el && editableHost(el);
     return host ? { kind: "editable", el: host } : null;

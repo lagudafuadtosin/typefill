@@ -428,3 +428,21 @@ function flash(msg) {
 globalThis.__typefillOptions = { showPreview };
 
 start();
+
+// The setup guide: shown each time the page opens until it is closed with "Don't show this again" ticked, which it is
+// to start with. "How to set up a snippet" at the top brings it back.
+async function showGuide() {
+  const { guideHidden } = await api.storage.local.get("guideHidden");
+  if (!guideHidden) $("guide").hidden = false;
+}
+$("guideClose").addEventListener("click", async () => {
+  $("guide").hidden = true;
+  await api.storage.local.set({ guideHidden: $("guideHide").checked });
+});
+$("guideOpen").addEventListener("click", () => {
+  $("guideHide").checked = true;
+  $("guide").hidden = false;
+  $("guide").scrollIntoView({ block: "start" });
+  $("tryBox").focus();
+});
+showGuide();

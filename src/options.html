@@ -11,9 +11,27 @@
     <div>
       <h1>Typefill</h1>
       <p class="sub">Type a shortcut anywhere and it turns into the full text. Press <kbd id="searchKey">Ctrl+Shift+Space</kbd> to find a snippet by name.</p>
+      <button id="guideOpen" class="link" type="button">How to set up a snippet</button>
     </div>
     <p id="syncState" class="sync" aria-live="polite"></p>
   </header>
+  <section id="guide" class="guide" hidden aria-labelledby="guideTitle">
+    <h2 id="guideTitle">How to set up a snippet</h2>
+    <ol>
+      <li>Click <b>New snippet</b> on the left, or click a snippet in the list to change it.</li>
+      <li>In <b>Shortcut</b>, type what you will type to bring the snippet in, like <code>/hello</code>. Starting with <code>/</code> keeps it from going off in the middle of a normal word. No spaces.</li>
+      <li>In <b>Name</b>, write what it is for, so you can find it later.</li>
+      <li>In the big box at the bottom, write the text you want typed in.</li>
+      <li>To have it ask you for something first, like a name, a date or a choice, click <b>Text box</b>, <b>Date picker</b> or <b>Dropdown</b> above the big box. They put the right code in for you, so you never have to type it.</li>
+      <li>It saves by itself. You will see <b>Saved</b> at the bottom.</li>
+      <li>Try it in the box below. Then type it anywhere: in email, chat, documents and nearly every text box on the web.</li>
+    </ol>
+    <label class="try">Try it here <textarea id="tryBox" data-typefill-try rows="3" spellcheck="false" placeholder="Type /meet or one of your own shortcuts here"></textarea></label>
+    <div class="guide-foot">
+      <label class="toggle"><input id="guideHide" type="checkbox" checked> Don't show this again</label>
+      <button id="guideClose" class="primary" type="button">Close</button>
+    </div>
+  </section>
   <main>
     <aside>
       <div class="side-top">
@@ -108,5 +126,9 @@
   <script src="html.js"></script>
   <!-- Typefill Pro's scripts go here in the Pro build -->
   <script src="options.js"></script>
+  <!-- The page script, for the Try it here box only -->
+  <script src="guard.js"></script>
+  <script src="content.js"></script>
+  <!-- Typefill Pro's page script goes here in the Pro build -->
 </body>
 </html>
