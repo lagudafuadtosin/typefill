@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Typefill",
-  "version": "1.0.3",
+  "name": "Typefill: Free Text Expander & Snippets",
+  "version": "1.0.4",
   "description": "Type a short code and get your full text, with fill-in boxes, dropdowns and dates. Free, unlimited, private.",
   "permissions": [
     "storage",
