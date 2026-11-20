@@ -11,6 +11,9 @@
   <p>Customer: <span id="cust">Ada Lovelace</span></p>
   <form id="form2" onsubmit="event.preventDefault(); window.submitted = (window.submitted || 0) + 1;">
     <input id="f1" type="text"> <input id="f2" type="text">
+    <select id="f3"><option>Small</option><option disabled>Medium</option><option>Large</option><option>Huge</option></select>
+    <!-- A combobox the site builds itself: it listens for the arrow keys and picks the option -->
+    <input id="f4" type="text" role="combobox" data-pick="0" onkeydown="if (event.key === 'ArrowDown') { this.dataset.pick = +this.dataset.pick + 1; event.preventDefault(); } if (event.key === 'ArrowUp') { this.dataset.pick = +this.dataset.pick - 1; event.preventDefault(); }">
   </form>
   <!-- A post box inside the page's own modal dialog, like LinkedIn -->
   <dialog id="modal"><div id="inmodal" contenteditable="true" style="border:1px solid #999;min-height:60px;width:400px"></div></dialog>
